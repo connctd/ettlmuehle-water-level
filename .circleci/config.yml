@@ -1,0 +1,55 @@
+version: 2
+workflows:
+  version: 2
+  lint-test:
+    jobs:
+      - lint
+      - test
+jobs:
+  lint:
+    docker:
+      - image: node:14
+    steps:
+      - checkout
+      - restore_cache: # special step to restore the dependency cache
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run:
+          name: install-dependencies
+          # $NPMRC is saved in OnePassword for reference:
+          # https://connctd.1password.com/vaults/nofs7a4sjhz6iyje5at6lp2i7u/allitems/zpzkgifbzfelvdasqjncutefay
+          command: yarn install --frozen-lockfile
+      - save_cache: # special step to save the dependency cache
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+            - /root/.cache
+      - run:
+          name: lint
+          command: yarn lint
+  test:
+    docker:
+      - image: cypress/browsers:node14.16.0-chrome90-ff88
+        environment:
+          TZ: Europe/Berlin
+    steps:
+      - checkout
+      - restore_cache: # special step to restore the dependency cache
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run:
+          name: install-dependencies
+          # $NPMRC is saved in OnePassword for reference:
+          # https://connctd.1password.com/vaults/nofs7a4sjhz6iyje5at6lp2i7u/allitems/zpzkgifbzfelvdasqjncutefay
+          command: yarn install --frozen-lockfile
+      - run:
+          name: local-server
+          command: yarn build && yarn serve
+          background: true
+      - run:
+          name: test
+          command: export CYPRESS_ENDPOINT=http://$(node -p "require('ip').address()"):3000 && yarn wait-on $CYPRESS_ENDPOINT && yarn test
+      - store_artifacts:
+          path: cypress/screenshots
+      - store_artifacts:
+          path: cypress/videos

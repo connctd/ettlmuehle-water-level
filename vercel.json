@@ -1,0 +1,10 @@
+{
+  "name": "ettlmuehle-water-level",
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}

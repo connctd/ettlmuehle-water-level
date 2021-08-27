@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "@connctd/typescript"
+  ],
+  "globals": {
+    "NODE_ENV": "readonly",
+    "Cypress": "readonly",
+    "cy": "readonly"
+  }
+}
