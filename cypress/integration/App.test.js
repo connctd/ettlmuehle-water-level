@@ -4,7 +4,7 @@ describe('App', () => {
   it('shows current water levels', () => {
     cy.visit(`${ENDPOINT}/`);
 
-    cy.getByCy('current-level-1').should('have.text', '375 cm');
-    cy.getByCy('current-level-2').should('have.text', '370 cm');
+    cy.getByCy('current-level-1').should('have.text', '70 cm');
+    cy.getByCy('current-level-2').should('have.text', '65 cm');
   });
 });
