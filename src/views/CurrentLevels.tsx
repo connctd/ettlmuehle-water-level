@@ -8,6 +8,10 @@ interface CurrentLevelsProps {
   level2: number;
 }
 
+const Container = styled.div`
+  margin-top: 32px;
+`;
+
 const Table = styled.div`
   margin-top: 32px;
   border: dotted 1px #717C8E;
@@ -44,11 +48,11 @@ const ValueCell = styled(Cell)`
 `;
 
 const CurrentLevels: React.FC<CurrentLevelsProps> = ({ level1, level2 }) => (
-  <>
+  <Container>
     <Heading>Aktuelle Wasserstände</Heading>
     <Table>
       <Row>
-        <LabelCell>
+        <LabelCell style={{ color: '#2E567E' }}>
           Messstelle 1
         </LabelCell>
         <ValueCell data-cy="current-level-1">
@@ -56,7 +60,7 @@ const CurrentLevels: React.FC<CurrentLevelsProps> = ({ level1, level2 }) => (
         </ValueCell>
       </Row>
       <Row>
-        <LabelCell>
+        <LabelCell style={{ color: '#C05353' }}>
           Messstelle 2
         </LabelCell>
         <ValueCell data-cy="current-level-2">
@@ -64,7 +68,7 @@ const CurrentLevels: React.FC<CurrentLevelsProps> = ({ level1, level2 }) => (
         </ValueCell>
       </Row>
     </Table>
-  </>
+  </Container>
 );
 
 export default CurrentLevels;
