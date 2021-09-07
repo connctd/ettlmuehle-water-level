@@ -35,14 +35,6 @@ const thingsQuery = `
 					value
 					unit
 					propertyType
-					history {
-						edges {
-							node {
-								value
-								timestamp
-							}
-						}
-					}
 				}
 			}
 		}
