@@ -7,6 +7,10 @@ import (
 	"sthh.eu/graphql/connctd"
 )
 
+func handleNotFound(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNotFound)
+}
+
 func HandleCurrentValuesCall(w http.ResponseWriter, r *http.Request) {
 	// handleCors(w, r)
 
