@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
@@ -24,7 +25,7 @@ const thingsQuery = `
 			name
 			status
 			displayType
-			components {
+			components(componentPropertyConstraint: {propertyType: "core.WATERLEVEL"}) {
 				id
 				name
 				componentType
@@ -146,7 +147,7 @@ func MonthlyData(date time.Time, n int) ([]AggregatedData, error) {
 	for i := 0; i < n; i++ {
 		select {
 		case error := <-errorChannel:
-			logrus.Info(error)
+			// logrus.Info(error)
 			errors = append(errors, error)
 		case result := <-resultChannel:
 			months = append(months, result)
@@ -340,6 +341,8 @@ func sendGQLQuery(externalSubjectID string, query GQLQuery, respBody interface{}
 	err = json.NewDecoder(resp.Body).Decode(respBody)
 	if err != nil {
 		logrus.WithError(err).Errorln("Failed to parse response body")
+		body, _ := ioutil.ReadAll(resp.Body)
+		logrus.Errorln(body)
 		return err
 	}
 
