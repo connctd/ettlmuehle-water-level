@@ -293,7 +293,9 @@ func getThings() (SensorData, error) {
 
 func getThingsWithHistory(from, to time.Time) (SensorData, error) {
 	var things SensorData
+	logrus.WithTime(time.Now()).Info("Start query")
 	err := sendGQLQuery("default", buildHistoryQuery(from, to), &things)
+	logrus.WithTime(time.Now()).Info("Finished query")
 	return things, err
 }
 
@@ -341,8 +343,6 @@ func sendGQLQuery(externalSubjectID string, query GQLQuery, respBody interface{}
 	err = json.NewDecoder(resp.Body).Decode(respBody)
 	if err != nil {
 		logrus.WithError(err).Errorln("Failed to parse response body")
-		body, _ := ioutil.ReadAll(resp.Body)
-		logrus.Errorln(body)
 		return err
 	}
 

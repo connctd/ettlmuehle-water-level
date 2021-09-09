@@ -9,7 +9,7 @@ import (
 )
 
 func HandleAggregateCall(w http.ResponseWriter, r *http.Request) {
-	// handleCors(w, r)
+	handleCors(w, r)
 
 	switch r.Method {
 	case http.MethodOptions:

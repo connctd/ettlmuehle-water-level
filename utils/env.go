@@ -22,3 +22,10 @@ const (
 	ErrorCodeFailedEncrypt = 1
 	ErrorCodeForbidden     = 403
 )
+
+var (
+	AllowedOrigins = map[string]struct{}{
+		"http://localhost:8080": {},
+		"http://localhost:3000": {},
+	}
+)

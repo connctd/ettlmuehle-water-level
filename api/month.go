@@ -11,7 +11,7 @@ import (
 const DEFAULT_NUMBER_OF_MONTHS = 1
 
 func HandleAggregateMonthCall(w http.ResponseWriter, r *http.Request) {
-	// handleCors(w, r)
+	handleCors(w, r)
 
 	switch r.Method {
 	case http.MethodOptions:
