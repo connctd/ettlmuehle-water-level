@@ -61,5 +61,6 @@ func handleCurrentValues(w http.ResponseWriter, r *http.Request) {
 		response.Errors = append(response.Errors, err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }

@@ -146,7 +146,6 @@ func MonthlyData(date time.Time, n int) ([]AggregatedData, error) {
 	for i := 0; i < n; i++ {
 		select {
 		case error := <-errorChannel:
-			// logrus.Info(error)
 			errors = append(errors, error)
 		case result := <-resultChannel:
 			months = append(months, result)
