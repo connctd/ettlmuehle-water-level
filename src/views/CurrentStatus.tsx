@@ -191,7 +191,7 @@ const CurrentStatus: React.FC<CurrentStatusProps> = ({ level1, level2 }) => {
   const text = getStatusText(level1, level2);
 
   return (
-    <Container type={type}>
+    <Container type={type} data-cy="current-status">
       <IconCircle type={type}>
         <Icon color={typeColor} size="43px" />
       </IconCircle>

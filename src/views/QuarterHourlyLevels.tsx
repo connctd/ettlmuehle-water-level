@@ -2,14 +2,16 @@ import React from 'react';
 import styled from '@emotion/styled';
 import moment from 'moment';
 
-import { DataEntry } from '../@types/data';
+import { LEVEL_1_ID, LEVEL_2_ID } from '../config';
+
+import { QuarterlyValuesData } from '../hooks/useQuarterlyValues';
 
 import Heading from '../components/Heading';
 import Chart from '../components/Chart';
 import DataTable from '../components/DataTable';
 
 interface QuarterHouerlyLevelsProps {
-  data: DataEntry[];
+  data: QuarterlyValuesData;
 }
 
 const Container = styled.div`
@@ -17,14 +19,17 @@ const Container = styled.div`
 `;
 
 const QuarterHouerlyLevels: React.FC<QuarterHouerlyLevelsProps> = ({ data }) => {
-  const categories = data.map((entry) => moment(entry.date).format('DD.MM.YYYY HH:mm'));
-  const dataLevel1 = data.map((entry) => entry.level1 / 10);
-  const dataLevel2 = data.map((entry) => entry.level2 / 10);
+  const dataEntries = Object.entries(data);
 
-  const formattedData = data.map((entry) => ({
-    date: moment(entry.date).format('DD.MM.YYYY - HH:mm'),
-    level1: entry.level1 / 10,
-    level2: entry.level2 / 10
+  const categories = dataEntries.map((dataEntry) => moment(dataEntry[0]).format('DD.MM.YYYY HH:mm'));
+
+  const dataLevel1 = dataEntries.map((dataEntry) => dataEntry[1][LEVEL_1_ID] / 10);
+  const dataLevel2 = dataEntries.map((dataEntry) => dataEntry[1][LEVEL_2_ID] / 10);
+
+  const formattedData = dataEntries.map((dataEntry) => ({
+    date: moment(dataEntry[0]).format('DD.MM.YYYY - HH:mm'),
+    level1: dataEntry[1][LEVEL_1_ID] / 10,
+    level2: dataEntry[1][LEVEL_2_ID] / 10
   }));
 
   return (
@@ -45,6 +50,7 @@ const QuarterHouerlyLevels: React.FC<QuarterHouerlyLevelsProps> = ({ data }) => 
       <DataTable
         dateHeader="Datum & Uhrzeit"
         data={formattedData}
+        dataCyPrefix="quarterHourly"
       />
     </Container>
   );

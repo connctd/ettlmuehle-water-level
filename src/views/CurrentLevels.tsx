@@ -47,28 +47,33 @@ const ValueCell = styled(Cell)`
   font-weight: 700;
 `;
 
-const CurrentLevels: React.FC<CurrentLevelsProps> = ({ level1, level2 }) => (
-  <Container>
-    <Heading>Aktuelle Wasserstände</Heading>
-    <Table>
-      <Row>
-        <LabelCell style={{ color: '#2E567E' }}>
-          Messstelle 1
-        </LabelCell>
-        <ValueCell data-cy="current-level-1">
-          {level1} cm
-        </ValueCell>
-      </Row>
-      <Row>
-        <LabelCell style={{ color: '#C05353' }}>
-          Messstelle 2
-        </LabelCell>
-        <ValueCell data-cy="current-level-2">
-          {level2} cm
-        </ValueCell>
-      </Row>
-    </Table>
-  </Container>
-);
+const CurrentLevels: React.FC<CurrentLevelsProps> = ({ level1, level2 }) => {
+  const level1cm = level1 / 10;
+  const level2cm = level2 / 10;
+
+  return (
+    <Container>
+      <Heading>Aktuelle Wasserstände</Heading>
+      <Table>
+        <Row>
+          <LabelCell style={{ color: '#2E567E' }}>
+            Messstelle 1
+          </LabelCell>
+          <ValueCell data-cy="current-level-1">
+            {level1cm} cm
+          </ValueCell>
+        </Row>
+        <Row>
+          <LabelCell style={{ color: '#C05353' }}>
+            Messstelle 2
+          </LabelCell>
+          <ValueCell data-cy="current-level-2">
+            {level2cm} cm
+          </ValueCell>
+        </Row>
+      </Table>
+    </Container>
+  );
+};
 
 export default CurrentLevels;

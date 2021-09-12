@@ -45,7 +45,7 @@ const Chart: React.FC<ChartProps> = ({
       {
         show: true,
         realtime: true,
-        start: 60,
+        start: 90,
         end: 100
       }
     ] : undefined,
@@ -125,7 +125,7 @@ const Chart: React.FC<ChartProps> = ({
       {
         type: 'line',
         smooth: true,
-        data: data1.map((val) => (val + 43000) / 100)
+        data: data1.map((val) => Number((val + 43000) / 100).toFixed(2))
       },
       {
         name: 'Messstelle 2',
@@ -137,7 +137,7 @@ const Chart: React.FC<ChartProps> = ({
       {
         type: 'line',
         smooth: true,
-        data: data2.map((val) => (val + 43000) / 100)
+        data: data2.map((val) => Number((val + 43000) / 100).toFixed(2))
       }
     ]
   };
