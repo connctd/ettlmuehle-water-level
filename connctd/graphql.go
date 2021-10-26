@@ -24,7 +24,7 @@ const thingsQuery = `
 			name
 			status
 			displayType
-			components(componentPropertyConstraint: {propertyType: "core.WATERLEVEL"}) {
+			components(componentPropertyConstraint: {id: "waterlevel"}) {
 				id
 				name
 				componentType
@@ -50,7 +50,7 @@ const thingsWithHistoryQuery = `
 			displayType
 			manufacturer
 			status
-			components(componentPropertyConstraint: {propertyType: "core.WATERLEVEL"}) {
+			components(componentPropertyConstraint: {id: "waterlevel"}) {
 				id
 				name
 				capabilities
@@ -80,7 +80,7 @@ const thingsWithHistoryQuery = `
 					}
 				}
 			}
-		
+
 		}
 	}
 `
