@@ -8,6 +8,7 @@ import { MonthlyValuesData } from '../hooks/useMonthlyValues';
 import SmallSection from '../components/SmallSection';
 import Chart from '../components/Chart';
 import DataTable from '../components/DataTable';
+import { normalizeLevel } from '../utils/levels';
 
 interface MonthlyLevelsProps {
   data: MonthlyValuesData;
@@ -17,13 +18,13 @@ const MonthlyLevels: React.FC<MonthlyLevelsProps> = ({ data }) => {
   const sortedData = data.sort((a, b) => moment(a.to).unix() - moment(b.to).unix());
 
   const categories = sortedData.map((dataEntry) => moment(dataEntry.from).format('MM.YYYY'));
-  const dataLevel1 = sortedData.map((dataEntry) => dataEntry.levels[LEVEL_1_ID] / 10);
-  const dataLevel2 = sortedData.map((dataEntry) => dataEntry.levels[LEVEL_2_ID] / 10);
+  const dataLevel1 = sortedData.map((dataEntry) => normalizeLevel(dataEntry.levels[LEVEL_1_ID]));
+  const dataLevel2 = sortedData.map((dataEntry) => normalizeLevel(dataEntry.levels[LEVEL_2_ID]));
 
   const formattedData = sortedData.map((dataEntry) => ({
     date: moment(dataEntry.from).format('MM.YYYY'),
-    level1: dataEntry.levels[LEVEL_1_ID] / 10,
-    level2: dataEntry.levels[LEVEL_2_ID] / 10
+    level1: normalizeLevel(dataEntry.levels[LEVEL_1_ID]),
+    level2: normalizeLevel(dataEntry.levels[LEVEL_2_ID])
   }));
 
   return (

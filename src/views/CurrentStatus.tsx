@@ -6,6 +6,13 @@ import CheckIcon from 'mdi-react/CheckIcon';
 import AlertCircleOutlineIcon from 'mdi-react/AlertCircleOutlineIcon';
 import AlertOctagramOutlineIcon from 'mdi-react/AlertOctagramOutlineIcon';
 
+import {
+  LOWEST_THRESHOLD,
+  HIGHEST_THRESHOLD,
+  LOW_THRESHOLD,
+  HIGH_THRESHOLD
+} from '../config';
+
 interface CurrentStatusProps {
   level1: number;
   level2: number;
@@ -16,11 +23,6 @@ type CurrentStatusType = 'danger' | 'warning' | 'ok';
 interface CurrentStatusStyleProps {
   type: CurrentStatusType;
 }
-
-const LOWEST_THRESHOLD = 150;
-const LOW_THRESHOLD = 300;
-const HIGH_THRESHOLD = 800;
-const HIGHEST_THRESHOLD = 1000;
 
 function getStatusType(level1: number, level2: number): CurrentStatusType {
   if (

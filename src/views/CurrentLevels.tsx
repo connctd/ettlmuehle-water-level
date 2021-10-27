@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 import Heading from '../components/Heading';
+import { normalizeLevel } from '../utils/levels';
 
 interface CurrentLevelsProps {
   level1: number;
@@ -35,21 +36,23 @@ const Cell = styled.div`
 `;
 
 const LabelCell = styled(Cell)`
+  width: 50%;
   color: #444A55;
   font-size: 22px;
   font-weight: 500;
   border-right: dotted 1px #717C8E;
-  `;
+`;
 
 const ValueCell = styled(Cell)`
+  width: 50%;
   color: #2D3239;
   font-size: 25px;
   font-weight: 700;
 `;
 
 const CurrentLevels: React.FC<CurrentLevelsProps> = ({ level1, level2 }) => {
-  const level1cm = level1 / 10;
-  const level2cm = level2 / 10;
+  const level1cm = normalizeLevel(level1);
+  const level2cm = normalizeLevel(level2);
 
   return (
     <Container>

@@ -9,6 +9,7 @@ import { QuarterlyValuesData } from '../hooks/useQuarterlyValues';
 import Heading from '../components/Heading';
 import Chart from '../components/Chart';
 import DataTable from '../components/DataTable';
+import { normalizeLevel } from '../utils/levels';
 
 interface QuarterHouerlyLevelsProps {
   data: QuarterlyValuesData;
@@ -23,13 +24,13 @@ const QuarterHouerlyLevels: React.FC<QuarterHouerlyLevelsProps> = ({ data }) => 
 
   const categories = dataEntries.map((dataEntry) => moment(dataEntry[0]).format('DD.MM.YYYY HH:mm'));
 
-  const dataLevel1 = dataEntries.map((dataEntry) => dataEntry[1][LEVEL_1_ID] / 10);
-  const dataLevel2 = dataEntries.map((dataEntry) => dataEntry[1][LEVEL_2_ID] / 10);
+  const dataLevel1 = dataEntries.map((dataEntry) => normalizeLevel(dataEntry[1][LEVEL_1_ID]));
+  const dataLevel2 = dataEntries.map((dataEntry) => normalizeLevel(dataEntry[1][LEVEL_2_ID]));
 
   const formattedData = dataEntries.map((dataEntry) => ({
     date: moment(dataEntry[0]).format('DD.MM.YYYY - HH:mm'),
-    level1: dataEntry[1][LEVEL_1_ID] / 10,
-    level2: dataEntry[1][LEVEL_2_ID] / 10
+    level1: normalizeLevel(dataEntry[1][LEVEL_1_ID]),
+    level2: normalizeLevel(dataEntry[1][LEVEL_2_ID])
   }));
 
   return (
