@@ -24,7 +24,7 @@ const thingsQuery = `
 			name
 			status
 			displayType
-			components(componentPropertyConstraint: {propertyType: "core.WATERLEVEL"}) {
+			components(componentPropertyConstraint: {id: "waterlevel"}) {
 				id
 				name
 				componentType
@@ -50,7 +50,7 @@ const thingsWithHistoryQuery = `
 			displayType
 			manufacturer
 			status
-			components(componentPropertyConstraint: {propertyType: "core.WATERLEVEL"}) {
+			components(componentPropertyConstraint: {id: "waterlevel"}) {
 				id
 				name
 				capabilities
@@ -80,7 +80,7 @@ const thingsWithHistoryQuery = `
 					}
 				}
 			}
-		
+
 		}
 	}
 `
@@ -98,19 +98,19 @@ type GQLQuery struct {
 }
 
 type DataPoint struct {
-	Date  string `json:"date"`
-	Level int    `json:"level"`
+	Date  string  `json:"date"`
+	Level float64 `json:"level"`
 }
 
-func averageLevel(dataPoints []DataPoint) int {
-	sum := 0
+func averageLevel(dataPoints []DataPoint) float64 {
+	sum := float64(0)
 	if len(dataPoints) == 0 {
 		return sum
 	}
 	for _, dataPoint := range dataPoints {
 		sum += dataPoint.Level
 	}
-	return sum / len(dataPoints)
+	return sum / float64(len(dataPoints))
 }
 
 type AggregatedData struct {
@@ -167,10 +167,10 @@ func WeeklyData(date time.Time, n int) ([]AggregatedData, error) {
 	// If this is to slow, we should instead send only one request for all months and aggregate it manually.
 	for i := 0; i < n; i++ {
 		go func(n int) {
-			// The first day of the month
+			// Start seven days earlier
 			from := now.With(date).BeginningOfDay()
 			from = from.AddDate(0, 0, -n*7)
-			// The last day of the month
+			// The last day of the seven day period
 			to := from.AddDate(0, 0, 7)
 			month, err := AggregatedHistory(from, to)
 			if err != nil {
@@ -198,13 +198,13 @@ func WeeklyData(date time.Time, n int) ([]AggregatedData, error) {
 
 func AggregatedHistory(from, to time.Time) (AggregatedData, error) {
 	response := AggregatedData{From: from, To: to}
-	monthlyHistory, err := history(from, to)
+	historyData, err := history(from, to)
 	if err != nil {
 		return response, err
 	}
 	response.Levels = LevelBySensorId{}
 
-	for sensorId, dataPoints := range monthlyHistory {
+	for sensorId, dataPoints := range historyData {
 		if len(dataPoints) <= 0 {
 			continue
 		}
@@ -215,7 +215,7 @@ func AggregatedHistory(from, to time.Time) (AggregatedData, error) {
 }
 
 func QuarterlyHourData(from, to time.Time) (map[time.Time]LevelBySensorId, error) {
-	intervall := 15 * time.Minute
+	intervall := 10 * time.Minute
 	h, err := history(from.Round(intervall), to.Round(intervall))
 	if err != nil {
 		return nil, err

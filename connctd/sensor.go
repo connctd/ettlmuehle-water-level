@@ -4,7 +4,7 @@ type SensorId string
 
 type HistoryBySensorId map[SensorId][]DataPoint
 
-type LevelBySensorId map[SensorId]int
+type LevelBySensorId map[SensorId]float64
 
 /**
 {
@@ -112,16 +112,16 @@ type Component struct {
 }
 
 type Property struct {
-	ID           string `json:"id"`
-	Name         string `json:"name"`
-	Value        int    `json:"value,string"`
-	Unit         string `json:"unit"`
-	PropertyType string `json:propertyType`
+	ID           string  `json:"id"`
+	Name         string  `json:"name"`
+	Value        float64 `json:"value,string"`
+	Unit         string  `json:"unit"`
+	PropertyType string  `json:propertyType`
 	History      struct {
 		Edges []struct {
 			Node struct {
-				Value     int    `json:"value"`
-				Timestamp string `json:"timestamp"`
+				Value     float64 `json:"value"`
+				Timestamp string  `json:"timestamp"`
 			}
 		}
 	}
