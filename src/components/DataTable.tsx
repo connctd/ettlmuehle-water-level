@@ -15,7 +15,7 @@ const DataTable: React.FC<DataTableProps> = ({
   dateHeader, data, dataCyPrefix, style
 }) => {
   const rows = data.map(({ date, level1, level2 }, index) => {
-    if (level1 === 0 && level2 === 0) return null;
+    if (level1 === 0 && level2 === 0) return <></>;
 
     return (
       <Table.Row
