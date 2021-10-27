@@ -16,6 +16,6 @@ func main() {
 	http.HandleFunc("/api/aggregate", handler.HandleAggregateCall)
 
 	fmt.Println("Waiting...")
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8089", nil)
 
 }

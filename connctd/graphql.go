@@ -98,19 +98,19 @@ type GQLQuery struct {
 }
 
 type DataPoint struct {
-	Date  string `json:"date"`
-	Level int    `json:"level"`
+	Date  string  `json:"date"`
+	Level float64 `json:"level"`
 }
 
-func averageLevel(dataPoints []DataPoint) int {
-	sum := 0
+func averageLevel(dataPoints []DataPoint) float64 {
+	sum := float64(0)
 	if len(dataPoints) == 0 {
 		return sum
 	}
 	for _, dataPoint := range dataPoints {
 		sum += dataPoint.Level
 	}
-	return sum / len(dataPoints)
+	return sum / float64(len(dataPoints))
 }
 
 type AggregatedData struct {
