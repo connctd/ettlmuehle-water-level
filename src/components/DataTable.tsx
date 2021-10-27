@@ -14,16 +14,20 @@ interface DataTableProps {
 const DataTable: React.FC<DataTableProps> = ({
   dateHeader, data, dataCyPrefix, style
 }) => {
-  const rows = data.map(({ date, level1, level2 }, index) => (
-    <Table.Row
-      key={date}
-      data-cy={`${dataCyPrefix}-table-row-${data.length - index}`}
-    >
-      <Table.Cell style={{ width: 190 }}>{date}</Table.Cell>
-      <Table.Cell>{level1} cm</Table.Cell>
-      <Table.Cell>{level2} cm</Table.Cell>
-    </Table.Row>
-  )).reverse().slice(0, 16);
+  const rows = data.map(({ date, level1, level2 }, index) => {
+    if (level1 === 0 && level2 === 0) return null;
+
+    return (
+      <Table.Row
+        key={date}
+        data-cy={`${dataCyPrefix}-table-row-${data.length - index}`}
+      >
+        <Table.Cell style={{ width: 190 }}>{date}</Table.Cell>
+        <Table.Cell>{level1} cm</Table.Cell>
+        <Table.Cell>{level2} cm</Table.Cell>
+      </Table.Row>
+    );
+  }).reverse().slice(0, 16);
 
   return (
     <Table style={{ ...style, marginTop: 32 }}>
