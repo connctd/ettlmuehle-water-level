@@ -167,10 +167,10 @@ func WeeklyData(date time.Time, n int) ([]AggregatedData, error) {
 	// If this is to slow, we should instead send only one request for all months and aggregate it manually.
 	for i := 0; i < n; i++ {
 		go func(n int) {
-			// The first day of the month
+			// Start seven days earlier
 			from := now.With(date).BeginningOfDay()
 			from = from.AddDate(0, 0, -n*7)
-			// The last day of the month
+			// The last day of the seven day period
 			to := from.AddDate(0, 0, 7)
 			month, err := AggregatedHistory(from, to)
 			if err != nil {
@@ -198,13 +198,13 @@ func WeeklyData(date time.Time, n int) ([]AggregatedData, error) {
 
 func AggregatedHistory(from, to time.Time) (AggregatedData, error) {
 	response := AggregatedData{From: from, To: to}
-	monthlyHistory, err := history(from, to)
+	historyData, err := history(from, to)
 	if err != nil {
 		return response, err
 	}
 	response.Levels = LevelBySensorId{}
 
-	for sensorId, dataPoints := range monthlyHistory {
+	for sensorId, dataPoints := range historyData {
 		if len(dataPoints) <= 0 {
 			continue
 		}
