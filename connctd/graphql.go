@@ -215,7 +215,7 @@ func AggregatedHistory(from, to time.Time) (AggregatedData, error) {
 }
 
 func QuarterlyHourData(from, to time.Time) (map[time.Time]LevelBySensorId, error) {
-	intervall := 15 * time.Minute
+	intervall := 10 * time.Minute
 	h, err := history(from.Round(intervall), to.Round(intervall))
 	if err != nil {
 		return nil, err
