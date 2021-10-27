@@ -19,7 +19,8 @@ const getFromToString = (from: string, to: string) => (
 );
 
 const WeeklyLevels: React.FC<WeeklyLevelsProps> = ({ data }) => {
-  const sortedData = data.sort((a, b) => moment(a.to).unix() - moment(b.to).unix());
+  const filteredData = data.filter((dataEntry) => dataEntry.levels[LEVEL_1_ID] !== undefined && dataEntry.levels[LEVEL_2_ID] !== undefined);
+  const sortedData = filteredData.sort((a, b) => moment(a.to).unix() - moment(b.to).unix());
 
   const categories = sortedData.map((dataEntry) => getFromToString(dataEntry.from, dataEntry.to));
   const dataLevel1 = sortedData.map((dataEntry) => normalizeLevel(dataEntry.levels[LEVEL_1_ID]));
