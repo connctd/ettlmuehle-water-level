@@ -42,7 +42,7 @@ const thingsQuery = `
 `
 
 const thingsWithHistoryQuery = `
-	query GetPropertyHistory($from: Time, $to: Time) {
+	query GetPropertyHistory($from: Time!, $to: Time) {
 		things(thingComponentConstraint: {componentType: "core.SENSOR"}) {
 			id
 			name
