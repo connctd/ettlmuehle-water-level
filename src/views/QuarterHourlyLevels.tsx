@@ -21,14 +21,13 @@ const Container = styled.div`
 
 const QuarterHouerlyLevels: React.FC<QuarterHouerlyLevelsProps> = ({ data }) => {
   const dataEntries = Object.entries(data);
-  const filteredDataEntries = dataEntries.filter((dataEntry) => dataEntry[1][LEVEL_1_ID] !== undefined && dataEntry[1][LEVEL_2_ID] !== undefined);
 
-  const categories = filteredDataEntries.map((dataEntry) => moment(dataEntry[0]).format('DD.MM.YYYY HH:mm'));
+  const categories = dataEntries.map((dataEntry) => moment(dataEntry[0]).format('DD.MM.YYYY HH:mm'));
 
-  const dataLevel1 = filteredDataEntries.map((dataEntry) => normalizeLevel(dataEntry[1][LEVEL_1_ID]));
-  const dataLevel2 = filteredDataEntries.map((dataEntry) => normalizeLevel(dataEntry[1][LEVEL_2_ID]));
+  const dataLevel1 = dataEntries.map((dataEntry) => normalizeLevel(dataEntry[1][LEVEL_1_ID]));
+  const dataLevel2 = dataEntries.map((dataEntry) => normalizeLevel(dataEntry[1][LEVEL_2_ID]));
 
-  const formattedData = filteredDataEntries.map((dataEntry) => ({
+  const formattedData = dataEntries.map((dataEntry) => ({
     date: moment(dataEntry[0]).format('DD.MM.YYYY - HH:mm'),
     level1: normalizeLevel(dataEntry[1][LEVEL_1_ID]),
     level2: normalizeLevel(dataEntry[1][LEVEL_2_ID])

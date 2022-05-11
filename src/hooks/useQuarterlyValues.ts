@@ -8,8 +8,8 @@ import fetchClient from '../services/fetchClient';
 
 export interface QuarterlyValuesData {
   [key: string]: {
-    [LEVEL_1_ID]: number;
-    [LEVEL_2_ID]: number;
+    [LEVEL_1_ID]?: number;
+    [LEVEL_2_ID]?: number;
   };
 }
 
