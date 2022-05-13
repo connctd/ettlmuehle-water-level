@@ -7,7 +7,7 @@ export const POLL_INTERVAL_MINUTES = Number(import.meta.env.POLL_INTERVAL_MINUTE
 export const POLL_INTERVAL_MILLISEC = POLL_INTERVAL_MINUTES * 60_000;
 
 export const LEVEL_1_ID = '46875304-139e-4e8d-b9ed-5a7c0ee0bf1f';
-export const LEVEL_2_ID = '94b562cc-9d9e-4532-855d-904ba71550f0';
+export const LEVEL_2_ID = 'caadb67c-565e-4487-b964-97a5a19491dd';
 
 export const LOWEST_THRESHOLD = 15;
 export const LOW_THRESHOLD = 30;

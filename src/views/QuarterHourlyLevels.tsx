@@ -36,7 +36,7 @@ const QuarterHouerlyLevels: React.FC<QuarterHouerlyLevelsProps> = ({ data }) => 
   return (
     <Container>
       <Heading>
-        Wasserstände alle 15 min.
+        Wasserstände alle 10 min.
       </Heading>
       <Chart
         categories={categories}
