@@ -62,7 +62,16 @@ const thingsWithHistoryQuery = `
 					unit
 					propertyType
 					value
-					history(from: $from, to: $to) {
+					history(
+						from: $from,
+						to: $to,
+						timeBucket: {
+							width: "10minutes",
+							gapfillOptions: {
+								fillFunction: INTERPOLATE
+							}
+            }
+					) {
 						edges {
 							node {
 								value
