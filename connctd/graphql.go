@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
@@ -41,26 +42,18 @@ const thingsQuery = `
 	}
 `
 
-const thingsWithHistoryQuery = `
+const thingsWithHistoryTimebucketQuery = `
 	query GetPropertyHistory($from: Time!, $to: Time) {
 		things(thingComponentConstraint: {componentType: "core.SENSOR"}) {
 			id
 			name
-			mainComponentId
-			displayType
-			manufacturer
 			status
 			components(componentPropertyConstraint: {id: "waterlevel"}) {
 				id
 				name
-				capabilities
-				componentType
 				properties {
 					id
 					name
-					lastUpdate
-					unit
-					propertyType
 					value
 					history(
 						from: $from,
@@ -70,7 +63,7 @@ const thingsWithHistoryQuery = `
 							gapfillOptions: {
 								fillFunction: INTERPOLATE
 							}
-            }
+            			}
 					) {
 						edges {
 							node {
@@ -80,25 +73,49 @@ const thingsWithHistoryQuery = `
 						}
 					}
 				}
-				actions {
+			}
+		}
+	}
+`
+const thingsWithHistoryQuery = `
+	query GetPropertyHistory($from: Time!, $to: Time) {
+		things(thingComponentConstraint: {componentType: "core.SENSOR"}) {
+			id
+			name
+			status
+			components(componentPropertyConstraint: {id: "waterlevel"}) {
+				id
+				name
+				properties {
 					id
 					name
-					parameters {
-						name
-						type
+					value
+					history(
+						from: $from,
+						to: $to,
+					) {
+						edges {
+							node {
+								value
+								timestamp
+							}
+						}
 					}
 				}
 			}
-
 		}
 	}
 `
 
-func buildHistoryQuery(from, to time.Time) GQLQuery {
+func buildHistoryQuery(from, to time.Time, timeBucket bool) GQLQuery {
 	variables := make(map[string]interface{})
 	variables["from"] = from
 	variables["to"] = to
-	return GQLQuery{Query: thingsWithHistoryQuery, Variables: variables}
+	query := thingsWithHistoryQuery
+	if timeBucket {
+		query = thingsWithHistoryTimebucketQuery
+	}
+	return GQLQuery{Query: query, Variables: variables}
 }
 
 type GQLQuery struct {
@@ -207,7 +224,7 @@ func WeeklyData(date time.Time, n int) ([]AggregatedData, error) {
 
 func AggregatedHistory(from, to time.Time) (AggregatedData, error) {
 	response := AggregatedData{From: from, To: to}
-	historyData, err := history(from, to)
+	historyData, err := history(from, to, false)
 	if err != nil {
 		return response, err
 	}
@@ -224,13 +241,13 @@ func AggregatedHistory(from, to time.Time) (AggregatedData, error) {
 }
 
 func QuarterlyHourData(from, to time.Time) (map[time.Time]LevelBySensorId, error) {
-	intervall := 10 * time.Minute
-	h, err := history(from.Round(intervall), to.Round(intervall))
+	interval := 10 * time.Minute
+	h, err := history(from.Round(interval), to.Round(interval), true)
 	if err != nil {
 		return nil, err
 	}
 
-	// We round the sensor timestamp to the nearest 15 minute intervall
+	// We round the sensor timestamp to the nearest 15 minute interval
 	// and map the rounded timestamp to sensor values for each sensor id.
 	// If we have multiple sensor values for the same sensor that round to the same time,
 	// only the last one is used. We could instead aggregate the values.
@@ -241,7 +258,7 @@ func QuarterlyHourData(from, to time.Time) (map[time.Time]LevelBySensorId, error
 			if err != nil {
 				continue
 			}
-			date = date.Round(intervall)
+			date = date.Round(interval)
 			_, ok := aggregatedData[date]
 			if !ok {
 				aggregatedData[date] = LevelBySensorId{}
@@ -252,9 +269,9 @@ func QuarterlyHourData(from, to time.Time) (map[time.Time]LevelBySensorId, error
 	return aggregatedData, nil
 }
 
-func history(from, to time.Time) (HistoryBySensorId, error) {
+func history(from, to time.Time, timeBucket bool) (HistoryBySensorId, error) {
 	historyData := HistoryBySensorId{}
-	things, _ := getThingsWithHistory(from, to)
+	things, _ := getThingsWithHistory(from, to, timeBucket)
 	sensorById := things.waterLevelSensorById()
 	if len(sensorById) < 2 {
 		return historyData, errors.New("Failed to retrieve at least 2 sensors from platform")
@@ -298,11 +315,12 @@ func getThings() (SensorData, error) {
 	return things, err
 }
 
-func getThingsWithHistory(from, to time.Time) (SensorData, error) {
+func getThingsWithHistory(from, to time.Time, timeBucket bool) (SensorData, error) {
 	var things SensorData
-	logrus.WithTime(time.Now()).Info("Start query")
-	err := sendGQLQuery("default", buildHistoryQuery(from, to), &things)
-	logrus.WithTime(time.Now()).Info("Finished query")
+	err := sendGQLQuery("default", buildHistoryQuery(from, to, timeBucket), &things)
+	if err != nil {
+		logrus.WithError(err).Errorln("GQL query failed!")
+	}
 	return things, err
 }
 
@@ -349,7 +367,8 @@ func sendGQLQuery(externalSubjectID string, query GQLQuery, respBody interface{}
 
 	err = json.NewDecoder(resp.Body).Decode(respBody)
 	if err != nil {
-		logrus.WithError(err).Errorln("Failed to parse response body")
+		b, _ := ioutil.ReadAll(resp.Body)
+		logrus.WithError(err).WithField("body", b).Errorln("Failed to parse response body")
 		return err
 	}
 
